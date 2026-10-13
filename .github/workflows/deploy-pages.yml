@@ -1,0 +1,58 @@
+name: Deploy VDK Organics website
+
+on:
+  push:
+    branches:
+      - in
+      - main
+      - master
+    paths:
+      - "index.html"
+      - "categories.html"
+      - "history.html"
+      - "index.css"
+      - "script.js"
+      - "translator.js"
+      - "images/vdk-organics-logo.jpeg"
+      - "CNAME"
+      - ".github/workflows/deploy-pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out website
+        uses: actions/checkout@v4
+
+      - name: Prepare website files
+        run: |
+          mkdir -p _site/images
+          cp index.html categories.html history.html index.css script.js translator.js CNAME _site/
+          cp images/vdk-organics-logo.jpeg _site/images/
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
