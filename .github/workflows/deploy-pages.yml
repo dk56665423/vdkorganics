@@ -14,7 +14,6 @@ on:
       - "script.js"
       - "translator.js"
       - "images/vdk-organics-logo.jpeg"
-      - "CNAME"
       - ".github/workflows/deploy-pages.yml"
   workflow_dispatch:
 
@@ -35,7 +34,7 @@ jobs:
       - name: Prepare website files
         run: |
           mkdir -p _site/images
-          cp index.html categories.html history.html index.css script.js translator.js CNAME _site/
+          cp index.html categories.html history.html index.css script.js translator.js _site/
           cp images/vdk-organics-logo.jpeg _site/images/
 
       - name: Upload Pages artifact
